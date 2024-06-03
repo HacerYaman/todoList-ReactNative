@@ -1,8 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, {useState} from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Task from './components/Task';
 
 export default function App() {
+
+  const [task, setTask]= useState(""); // STATE, task -> tracking text , setTask -> function
+  
+  const [taskItems,setTaskItems]= useState([]);
+
+  const handleAddTask=()=> {
+    Keyboard.dismiss;
+    console.log(task);
+    setTaskItems([...taskItems,task])
+    setTask(null);
+  }
+
+
+
   return (
     <View style={styles.container}>
       
@@ -15,10 +30,11 @@ export default function App() {
          </Text>
 
         <View style={styles.items} >
-          {/* this is where the taks will go*/}
-          <Task taskName={"task1"}/>
-          <Task/>
-          <Task/>
+          {
+            taskItems.map((item, index)=> {
+              return <Task key= {index} taskName={item}></Task>
+            })
+          }
         </View>
       </View>
 
@@ -26,10 +42,14 @@ export default function App() {
       behavior={Platform.OS=="ios" ? "padding" : "height" }  
       style={styles.writeTaskWrapper}>
 
-        <TextInput style={styles.input} placeholder='Write a task'>
+      <TextInput
+          style={styles.input}
+          placeholder={'Write a task'}
+          onChangeText={text => setTask(text)}  
+        >
         </TextInput>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=> handleAddTask()}> 
         <View style={styles.addWrapper}>
           <Text style={styles.addText}> + </Text>
         </View>
